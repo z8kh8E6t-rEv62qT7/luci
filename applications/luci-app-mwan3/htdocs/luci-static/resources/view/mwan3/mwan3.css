@@ -1,4 +1,15 @@
+#mwan3-service-status {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-items: flex-start;
+}
+
 #mwan3-service-status > .alert-message {
+	position: static !important;
+	left: auto !important;
+	top: auto !important;
+	transform: none !important;
 	display: inline-block;
 	margin: 1rem;
 	padding: 1rem;
