@@ -175,6 +175,16 @@ function renderTableInfo(ubus_data, target_div) {
 	target.appendChild(table);
 }
 
+function renderStatusError(error) {
+	var message = error && error.message ? error.message : String(error || _('Unknown error'));
+
+	return E('div', { 'class': 'alert-message warning' }, [
+		E('p', {}, _('Unable to load Babeld status.')),
+		E('p', {}, message),
+		E('p', {}, _('Make sure the babeld daemon is running and its ubus bindings are enabled.'))
+	]);
+}
+
 
 return view.extend({
 	callGetInfo: rpc.declare({
@@ -195,19 +205,12 @@ return view.extend({
 	}),
 
 	fetch_babeld() {
-		let data;
-		let self = this;
-		return new Promise(function (resolve, reject) {
-			Promise.all([self.callGetInfo(), self.callGetXroutes(), self.callGetRoutes(), self.callGetNeighbours()])
-				.then(function (res) {
-					data = res;
-					resolve([data]);
-				})
-				.catch(function (err) {
-					console.error(err);
-					reject([null]);
-				});
-		});
+		return Promise.all([
+			this.callGetInfo(),
+			this.callGetXroutes(),
+			this.callGetRoutes(),
+			this.callGetNeighbours()
+		]);
 	},
 
 	action_babeld() {
@@ -215,7 +218,7 @@ return view.extend({
 		return new Promise(function (resolve, reject) {
 			self
 				.fetch_babeld()
-				.then(function ([data]) {
+				.then(function (data) {
 					var info = data[0];
 					var xroutes = data[1];
 					var routes = data[2];
@@ -226,16 +229,6 @@ return view.extend({
 				.catch(function (err) {
 					reject(err);
 				});
-		});
-	},
-
-	load() {
-		return new Promise(function (resolve, reject) {
-			const script = E('script', { 'type': 'text/javascript' });
-			script.onload = resolve;
-			script.onerror = reject;
-			script.src = L.resource('babeld.js');
-			document.querySelector('head').appendChild(script);
 		});
 	},
 	render() {
@@ -256,6 +249,7 @@ return view.extend({
 			})
 			.catch(function (error) {
 				console.error(error);
+				return renderStatusError(error);
 			});
 	},
 	handleSaveApply: null,

@@ -66,6 +66,7 @@ return view.extend({
 			const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
 			const color = scanCache[res.bssid].color;
 
+			group.setAttribute('data-channel-graph', 'wifi');
 			line.setAttribute('style', 'fill:'+color+'4f'+';stroke:'+color+';stroke-width:0.5');
 			text.setAttribute('style', 'fill:'+color+';font-size:9pt; font-family:sans-serif; text-shadow:1px 1px 1px #000');
 			text.appendChild(document.createTextNode(res.ssid || res.bssid));
@@ -116,11 +117,23 @@ return view.extend({
 		const columns = (band != 2) ? freq_tbl.length * 4 : freq_tbl.length + 3;
 		const chan_graph = chan_analysis.graph;
 		const G = chan_graph.firstElementChild;
-		const step = (chan_graph.offsetWidth - 2) / columns;
+		const width = chan_graph.offsetWidth;
+		const step = (width - 2) / columns;
 		let curr_offset = step;
+
+		if (width <= 0)
+			return false;
+
+		G.querySelectorAll('[data-channel-graph]').forEach(function(elem) {
+			elem.remove();
+		});
+
+		chan_analysis.offset_tbl = {};
+		chan_analysis.width = width;
 
 		function createGraphHLine(graph, pos, width, dash) {
 			const elem = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+			elem.setAttribute('data-channel-graph', 'axis');
 			elem.setAttribute('x1', pos);
 			elem.setAttribute('y1', 0);
 			elem.setAttribute('x2', pos);
@@ -131,6 +144,7 @@ return view.extend({
 
 		function createGraphText(graph, pos, text) {
 			const elem = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+			elem.setAttribute('data-channel-graph', 'axis');
 			elem.setAttribute('y', 15);
 			elem.setAttribute('style', 'fill:#eee; font-size:9pt; font-family:sans-serif; text-shadow:1px 1px 1px #000');
 			elem.setAttribute('x', pos + 5);
@@ -186,9 +200,35 @@ return view.extend({
 		}
 		createGraphHLine(G,curr_offset+step, 0.1, 1);
 
-		chan_analysis.tab.addEventListener('cbi-tab-active', L.bind(function(ev) {
-			this.active_tab = ev.detail.tab;
-			if (!this.radios[this.active_tab].loadedOnce)
+		return true;
+	},
+
+	ensure_channel_graph(radio) {
+		const chan_analysis = radio.graph;
+		const width = chan_analysis.graph.offsetWidth;
+
+		if (width <= 0)
+			return false;
+
+		if (chan_analysis.width == width)
+			return true;
+
+		if (!this.create_channel_graph(chan_analysis, radio.channels, radio.band))
+			return false;
+
+		for (let bssid in radio.scanCache)
+			radio.scanCache[bssid].graph = null;
+
+		return true;
+	},
+
+	handleTabActive(ev) {
+		this.active_tab = ev.detail.tab;
+
+		const radio = this.radios[this.active_tab];
+
+		requestAnimationFrame(L.bind(function() {
+			if (this.ensure_channel_graph(radio) && !radio.loadedOnce)
 				poll.start();
 		}, this));
 	},
@@ -199,6 +239,9 @@ return view.extend({
 
 		const radio = this.radios[this.active_tab];
 		let q;
+
+		if (!this.ensure_channel_graph(radio))
+			return;
 
 		return Promise.all([
 			radio.dev.getScanList(),
@@ -468,6 +511,7 @@ return view.extend({
 				graph_data = {
 					graph: csvg,
 					offset_tbl: {},
+					width: 0,
 					col_width: 0,
 					tab: tab,
 				};
@@ -475,6 +519,7 @@ return view.extend({
 				this.radios[ifname+band] = {
 					dev: wifiDevs[ifname].dev,
 					band: band,
+					channels: bands[band].channels,
 					graph: graph_data,
 					table: table,
 					scanCache: {},
@@ -484,8 +529,7 @@ return view.extend({
 				cbi_update_table(table, [], E('em', { class: 'spinning' }, _('Starting wireless scan...')));
 
 				tabs.firstElementChild.appendChild(tab)
-
-				requestAnimationFrame(L.bind(this.create_channel_graph, this, graph_data, bands[band].channels, band));
+				tab.addEventListener('cbi-tab-active', L.bind(this.handleTabActive, this));
 			}
 		}
 

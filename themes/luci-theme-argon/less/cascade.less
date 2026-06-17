@@ -276,8 +276,14 @@ select[multiple="multiple"] {
 }
 
 #maincontent > .alert-message {
-  position: fixed;
-  transform: translate(-50%, -50%);
+  // LuCI notifications are inserted as direct #maincontent children.
+  // Keep them in-flow so they do not cover page controls.
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  width: auto;
+  margin: 0 1.25rem 1rem 1.25rem;
 }
 
 .container .alert,
