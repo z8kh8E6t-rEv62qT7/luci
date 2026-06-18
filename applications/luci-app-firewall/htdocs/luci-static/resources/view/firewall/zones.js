@@ -62,9 +62,9 @@ return view.extend({
 		}
 
 		let p = [
-			s.option(form.ListValue, 'input', _('Input')),
-			s.option(form.ListValue, 'output', _('Output')),
-			s.option(form.ListValue, 'forward', _('Forward'))
+			s.option(form.ListValue, 'input', _('Input', 'firewall input')),
+			s.option(form.ListValue, 'output', _('Output', 'firewall output')),
+			s.option(form.ListValue, 'forward', _('Forward', 'firewall forward'))
 		];
 
 		for (let popt of p) {
@@ -152,8 +152,8 @@ return view.extend({
 		};
 
 		p = [
-			s.taboption('general', form.ListValue, 'input', _('Input')),
-			s.taboption('general', form.ListValue, 'output', _('Output')),
+			s.taboption('general', form.ListValue, 'input', _('Input', 'firewall input')),
+			s.taboption('general', form.ListValue, 'output', _('Output', 'firewall output')),
 			s.taboption('general', form.ListValue, 'forward', _('Intra zone forward'))
 		];
 
@@ -165,8 +165,11 @@ return view.extend({
 		}
 
 		p[0].default = fwDefaults.getInput();
+		p[0].rmempty = false;
 		p[1].default = fwDefaults.getOutput();
+		p[1].rmempty = false;
 		p[2].default = fwDefaults.getForward();
+		p[2].rmempty = false;
 
 		o = s.taboption('general', form.Flag, 'masq', _('IPv4 Masquerading'),
 			_('Enable network address and port translation IPv4 (NAT4 or NAPT4) for outbound traffic on this zone. This is typically enabled on the <em>wan</em> zone.'));
