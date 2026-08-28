@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-04-25 12:14+0000\n"
+"PO-Revision-Date: 2026-08-14 12:12+0000\n"
 "Last-Translator: SnIPeRSnIPeR "
 "<snipersniper@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/openwrt/"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.17.1-dev\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #: applications/luci-app-strongswan-swanctl/htdocs/luci-static/resources/view/strongswan-swanctl/swanctl.js:299
 msgid "Action on initial configuration load"
@@ -296,7 +296,7 @@ msgstr "Время жизни"
 #: applications/luci-app-strongswan-swanctl/htdocs/luci-static/resources/view/strongswan-swanctl/swanctl.js:239
 msgid "Limit on time to complete rekeying/reauthentication"
 msgstr ""
-"Максимальное время на завершение обновления ключей/повторной аутентификации"
+"Максимальное время на завершение пересоздания ключей/повторной аутентификации"
 
 #: applications/luci-app-strongswan-swanctl/htdocs/luci-static/resources/view/strongswan-swanctl/swanctl.js:316
 msgid ""
@@ -392,7 +392,7 @@ msgstr "Диапазон NAT для туннелей с пересекающим
 
 #: applications/luci-app-strongswan-swanctl/htdocs/luci-static/resources/view/strongswan-swanctl/status.js:158
 msgid "Name"
-msgstr "Название"
+msgstr "Имя"
 
 #: applications/luci-app-strongswan-swanctl/htdocs/luci-static/resources/view/strongswan-swanctl/swanctl.js:42
 msgid "Name length shall not exceed 15 characters"
@@ -470,11 +470,11 @@ msgstr "Повторная аутентификация через"
 #: applications/luci-app-strongswan-swanctl/htdocs/luci-static/resources/view/strongswan-swanctl/swanctl.js:233
 #: applications/luci-app-strongswan-swanctl/htdocs/luci-static/resources/view/strongswan-swanctl/swanctl.js:355
 msgid "Rekey Time"
-msgstr "Интервал обновления ключей"
+msgstr "Интервал до пересоздания ключей"
 
 #: applications/luci-app-strongswan-swanctl/htdocs/luci-static/resources/view/strongswan-swanctl/status.js:127
 msgid "Rekey in"
-msgstr "Время обновления ключей"
+msgstr "Пересоздание ключей через"
 
 #: applications/luci-app-strongswan-swanctl/htdocs/luci-static/resources/view/strongswan-swanctl/status.js:160
 msgid "Remote"
